@@ -5,7 +5,7 @@ rm -rf /var/lib/ganglia/rrds/*
 rm -rf /mnt/ganglia/rrds/*
 
 # Symlink /var/lib/ganglia/rrds to /mnt/ganglia/rrds
-rmdir /var/lib/ganglia/rrds
+rm -rf /var/lib/ganglia/rrds
 ln -s /mnt/ganglia/rrds /var/lib/ganglia/rrds
 
 # Make sure rrd storage directory has right permissions
