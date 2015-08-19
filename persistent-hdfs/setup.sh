@@ -6,7 +6,7 @@ pushd /root/spark-ec2/persistent-hdfs
 source ./setup-slave.sh
 
 for node in $SLAVES $OTHER_MASTERS; do
-  ssh -t $SSH_OPTS root@$node "/root/spark-ec2/persistent-hdfs/setup-slave.sh" & sleep 0.3
+  ssh -t -t $SSH_OPTS root@$node "/root/spark-ec2/persistent-hdfs/setup-slave.sh" & sleep 0.3
 done
 wait
 
