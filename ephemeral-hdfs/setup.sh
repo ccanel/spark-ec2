@@ -17,18 +17,24 @@ wait
 
 /root/spark-ec2/copy-dir $EPHEMERAL_HDFS/conf
 
-NAMENODE_DIR=/mnt/ephemeral-hdfs/dfs/name
-
-if [ -f "$NAMENODE_DIR/current/VERSION" ] && [ -f "$NAMENODE_DIR/current/fsimage" ]; then
-  echo "Hadoop namenode appears to be formatted: skipping"
+echo "Stopping ephemeral HDFS..."
+# The scripts directory is different depending on the version.
+scripts_dir_1=$EPHEMERAL_HDFS/sbin
+scripts_dir_2=$EPHEMERAL_HDFS/bin
+if [ -e $scripts_dir_1/stop-dfs.sh ] ; then
+    scripts_dir_to_use=$scripts_dir_1
 else
-  echo "Formatting ephemeral HDFS namenode..."
-  $EPHEMERAL_HDFS/bin/hadoop namenode -format
+    scripts_dir_to_use=$scripts_dir_2
 fi
 
+$scripts_dir_to_use/stop-dfs.sh
+/root/spark-ec2/ephemeral-hdfs/clear_hdfs_dirs.sh
+$scripts_dir_to_use/slaves.sh /root/spark-ec2/ephemeral-hdfs/clear_hdfs_dirs.sh
+
+echo "Formatting ephemeral HDFS namenode..."
+$EPHEMERAL_HDFS/bin/hdfs namenode -format
+
 echo "Starting ephemeral HDFS..."
-# This is different depending on version. Simple hack: just try both.
-$EPHEMERAL_HDFS/sbin/start-dfs.sh
-$EPHEMERAL_HDFS/bin/start-dfs.sh
+$scripts_dir_to_use/start-dfs.sh
 
 popd
